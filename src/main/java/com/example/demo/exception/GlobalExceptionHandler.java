@@ -14,6 +14,7 @@ import java.util.List;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ResponseEntity<List<ErrorResponse>> handleValidationExceptions(
             MethodArgumentNotValidException ex) {
         List<ErrorResponse> errors = ex.getBindingResult().getAllErrors().stream().map((error) -> {
@@ -32,9 +33,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = Exception.class)
-    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<List<ErrorResponse>> otherExceptions(Exception ex) {
         List<ErrorResponse> errors = List.of(new ErrorResponse(ex.getMessage()));
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errors);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errors);
     }
 }
